@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, Clock, Search } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
-import { articlesByCategory, getCategory } from "@/data/articles";
+import { articlesByCategory, getCategory, type Article, type Category } from "@/data/articles";
 
 export const Route = createFileRoute("/topics/$slug")({
   loader: ({ params }) => {
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/topics/$slug")({
 });
 
 function CategoryPage() {
-  const { category, list } = Route.useLoaderData();
+  const { category, list } = Route.useLoaderData() as { category: Category; list: Article[] };
   const [q, setQ] = useState("");
   const [diff, setDiff] = useState<string>("all");
 

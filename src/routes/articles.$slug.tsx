@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Check, Clock, ExternalLink, ThumbsDown, ThumbsUp, X } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
-import { getArticle, getCategory } from "@/data/articles";
+import { getArticle, getCategory, type Article, type Category } from "@/data/articles";
 
 export const Route = createFileRoute("/articles/$slug")({
   loader: ({ params }) => {
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/articles/$slug")({
 });
 
 function ArticlePage() {
-  const { article, category } = Route.useLoaderData();
+  const { article, category } = Route.useLoaderData() as { article: Article; category: Category | undefined };
   const [solved, setSolved] = useState<null | "yes" | "no">(null);
   const [helpful, setHelpful] = useState<null | "yes" | "no">(null);
 
