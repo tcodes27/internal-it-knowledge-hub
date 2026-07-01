@@ -54,6 +54,10 @@ const difficultyTone: Record<string, string> = {
 
 function ArticlePage() {
   const { article, category } = Route.useLoaderData() as { article: Article; category: Category | undefined };
+  const siblings = useMemo(() => articlesByCategory(article.category), [article.category]);
+  const currentIdx = siblings.findIndex((a) => a.slug === article.slug);
+  const prevArticle = currentIdx > 0 ? siblings[currentIdx - 1] : null;
+  const nextArticle = currentIdx >= 0 && currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
   const [showAll, setShowAll] = useState(false);
   const [stepIdx, setStepIdx] = useState(0);
   const [completed, setCompleted] = useState(false);
