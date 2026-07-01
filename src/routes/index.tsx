@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, Sparkles, TrendingUp, Zap } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CategoryTile } from "@/components/category-tile";
 import { SearchPanel } from "@/components/search-panel";
-import { articles, categories } from "@/data/articles";
+import { CategoryModal } from "@/components/category-modal";
+import { categories, type Category } from "@/data/articles";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
