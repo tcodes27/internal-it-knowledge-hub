@@ -21,10 +21,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const popular = [...articles].sort((a, b) => b.views - a.views).slice(0, 5);
-  const recent = [...articles].sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated)).slice(0, 5);
+  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+  const previewCategories = categories.slice(0, 8);
 
   return (
+
     <PageShell>
       {/* Hero */}
       <section className="px-4 pt-6 sm:px-6 sm:pt-8">
