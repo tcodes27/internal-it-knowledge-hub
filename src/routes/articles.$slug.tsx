@@ -1,6 +1,21 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowLeft, Check, Clock, ExternalLink, ThumbsDown, ThumbsUp, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  CheckCircle2,
+  Clock,
+  ExternalLink,
+  LayoutList,
+  Lightbulb,
+  PartyPopper,
+  Send,
+  ThumbsDown,
+  ThumbsUp,
+  Wrench,
+  X,
+} from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { getArticle, getCategory, type Article, type Category } from "@/data/articles";
 
@@ -13,9 +28,9 @@ export const Route = createFileRoute("/articles/$slug")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.article.title ?? "Article"} — IT Support Hub` },
+      { title: `${loaderData?.article.title ?? "Article"} — Sprinter IT Hub` },
       { name: "description", content: loaderData?.article.summary ?? "" },
-      { property: "og:title", content: `${loaderData?.article.title ?? "Article"} — IT Support Hub` },
+      { property: "og:title", content: `${loaderData?.article.title ?? "Article"} — Sprinter IT Hub` },
       { property: "og:description", content: loaderData?.article.summary ?? "" },
     ],
   }),
@@ -23,137 +38,408 @@ export const Route = createFileRoute("/articles/$slug")({
   notFoundComponent: () => (
     <PageShell>
       <div className="mx-auto max-w-3xl px-6 py-32 text-center">
-        <h1 className="font-serif text-4xl">Article not found</h1>
+        <h1 className="text-4xl font-bold">Article not found</h1>
         <Link to="/topics" className="mt-6 inline-flex text-primary">Back to topics</Link>
       </div>
     </PageShell>
   ),
 });
 
+const difficultyTone: Record<string, string> = {
+  Easy: "bg-success/20 text-success-foreground",
+  Medium: "bg-warning/25 text-warning-foreground",
+  Advanced: "bg-critical/20 text-critical-foreground",
+};
+
 function ArticlePage() {
   const { article, category } = Route.useLoaderData() as { article: Article; category: Category | undefined };
+  const [showAll, setShowAll] = useState(false);
+  const [stepIdx, setStepIdx] = useState(0);
+  const [completed, setCompleted] = useState(false);
   const [solved, setSolved] = useState<null | "yes" | "no">(null);
   const [helpful, setHelpful] = useState<null | "yes" | "no">(null);
+  const [direction, setDirection] = useState<1 | -1>(1);
+
+  const total = article.steps.length;
+  const isLast = stepIdx === total - 1;
+  const progressPct = completed ? 100 : Math.round(((stepIdx + 1) / total) * 100);
+
+  const next = useCallback(() => {
+    if (isLast) {
+      setCompleted(true);
+      return;
+    }
+    setDirection(1);
+    setStepIdx((i) => Math.min(total - 1, i + 1));
+  }, [isLast, total]);
+
+  const prev = useCallback(() => {
+    if (completed) {
+      setCompleted(false);
+      return;
+    }
+    setDirection(-1);
+    setStepIdx((i) => Math.max(0, i - 1));
+  }, [completed]);
+
+  // keyboard navigation
+  useEffect(() => {
+    if (showAll) return;
+    function onKey(e: KeyboardEvent) {
+      const t = e.target as HTMLElement;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        next();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prev();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [next, prev, showAll]);
+
+  const step = article.steps[stepIdx];
 
   return (
     <PageShell>
-      <article className="mx-auto max-w-3xl px-6 pt-12 pb-24">
-        <Link
-          to="/topics/$slug"
-          params={{ slug: article.category }}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> {category?.name}
-        </Link>
+      {/* Header */}
+      <section className="border-b border-border/60 bg-gradient-soft">
+        <div className="mx-auto max-w-4xl px-6 pt-10 pb-12">
+          <Link
+            to="/topics/$slug"
+            params={{ slug: article.category }}
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            <ArrowLeft className="h-4 w-4" /> {category?.name}
+          </Link>
 
-        <h1 className="mt-6 font-serif text-5xl leading-tight md:text-6xl">{article.title}</h1>
-        <p className="mt-4 text-lg text-muted-foreground">{article.overview}</p>
+          <div className="mt-5 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
+              <Wrench className="h-3 w-3" /> Troubleshooting
+            </span>
+            <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider ${difficultyTone[article.difficulty]}`}>
+              {article.difficulty}
+            </span>
+          </div>
 
-        <div className="mt-6 flex flex-wrap gap-2 text-xs">
-          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
-            <Clock className="h-3 w-3" /> {article.estTime}
-          </span>
-          <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">{article.difficulty}</span>
-          <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">Updated {article.lastUpdated}</span>
+          <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
+            {article.title}
+          </h1>
+          <p className="mt-3 text-lg text-muted-foreground">{article.overview}</p>
+
+          <div className="mt-5 flex flex-wrap gap-4 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="h-4 w-4" /> {article.estTime}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <LayoutList className="h-4 w-4" /> {total} steps
+            </span>
+            <span>Updated {article.lastUpdated}</span>
+          </div>
         </div>
+      </section>
 
-        {/* Symptoms */}
-        <div className="mt-10 rounded-2xl bg-muted p-6">
-          <div className="text-sm font-medium uppercase tracking-wider text-primary">Common symptoms</div>
-          <ul className="mt-3 space-y-2 text-foreground/80">
+      {/* Symptoms */}
+      <section className="mx-auto max-w-4xl px-6 pt-10">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+            <Lightbulb className="h-4 w-4" /> Common symptoms
+          </div>
+          <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             {article.symptoms.map((s) => (
-              <li key={s} className="flex gap-2"><span className="text-primary">•</span> {s}</li>
+              <li key={s} className="flex items-start gap-2 text-sm text-foreground/80">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                {s}
+              </li>
             ))}
           </ul>
         </div>
+      </section>
 
-        {/* Steps */}
-        <h2 className="mt-12 font-serif text-3xl">Step-by-step fix</h2>
-        <ol className="mt-6 space-y-4">
-          {article.steps.map((s, i) => (
-            <li key={i} className="rounded-2xl bg-card p-6 shadow-card">
-              <div className="flex items-start gap-4">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary font-medium text-primary-foreground">
-                  {i + 1}
-                </span>
-                <div>
-                  <div className="font-serif text-xl">{s.title}</div>
-                  <p className="mt-2 text-foreground/80">{s.body}</p>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ol>
-
-        {/* Did this solve */}
-        <div className="mt-12 rounded-2xl bg-navy p-8 text-navy-foreground">
-          <div className="font-serif text-2xl">Did this solve your problem?</div>
-          <p className="mt-1 text-white/70">Let us know — it helps us improve these guides.</p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <button
-              onClick={() => setSolved("yes")}
-              className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition ${
-                solved === "yes" ? "bg-mint text-navy" : "bg-white/10 text-white hover:bg-white/20"
-              }`}
-            >
-              <Check className="h-4 w-4" /> Yes, it's fixed
-            </button>
-            <button
-              onClick={() => setSolved("no")}
-              className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition ${
-                solved === "no" ? "bg-coral text-navy" : "bg-white/10 text-white hover:bg-white/20"
-              }`}
-            >
-              <X className="h-4 w-4" /> No, I still need help
-            </button>
-          </div>
-
-          {solved === "yes" && (
-            <div className="mt-5 rounded-xl bg-white/10 p-4 text-sm">
-              🎉 Glad we could help. You can close this page.
-            </div>
-          )}
-          {solved === "no" && (
-            <div className="mt-5 rounded-xl bg-white/10 p-5">
-              <div className="font-medium">Let's get a human involved.</div>
-              <p className="mt-1 text-sm text-white/70">
-                Open a support ticket with our IT team. Include what you've tried so far.
-              </p>
-              <a
-                href="https://example.zendesk.com/hc/en-us/requests/new"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                Submit Zendesk ticket <ExternalLink className="h-4 w-4" />
-              </a>
-            </div>
-          )}
+      {/* Walkthrough OR all-steps view */}
+      <section className="mx-auto max-w-4xl px-6 py-12">
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-bold tracking-tight">Step-by-step fix</h2>
+          <button
+            type="button"
+            onClick={() => setShowAll((v) => !v)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-foreground/80 transition-all hover:bg-muted hover:text-foreground"
+          >
+            <LayoutList className="h-3.5 w-3.5" />
+            {showAll ? "Walkthrough mode" : "Show all steps"}
+          </button>
         </div>
 
-        {/* Helpful */}
-        <div className="mt-6 flex items-center justify-between rounded-2xl bg-card p-5 shadow-card">
+        {showAll ? (
+          <ol className="space-y-4">
+            {article.steps.map((s, i) => (
+              <li key={i} className="rounded-2xl border border-border bg-card p-6 shadow-card transition-shadow hover:shadow-card-hover">
+                <div className="flex items-start gap-4">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-primary text-sm font-bold text-primary-foreground">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <div className="text-lg font-bold tracking-tight">{s.title}</div>
+                    <p className="mt-2 text-foreground/80">{s.body}</p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        ) : completed ? (
+          <CompletionCard
+            article={article}
+            solved={solved}
+            setSolved={setSolved}
+            onRestart={() => {
+              setCompleted(false);
+              setStepIdx(0);
+              setSolved(null);
+            }}
+          />
+        ) : (
+          <div>
+            {/* Progress */}
+            <div className="mb-6">
+              <div className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <span>
+                  Step <span className="text-primary">{stepIdx + 1}</span> of {total}
+                </span>
+                <span>{progressPct}%</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-gradient-primary transition-all duration-500 ease-out"
+                  style={{ width: `${progressPct}%` }}
+                  role="progressbar"
+                  aria-valuenow={progressPct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                />
+              </div>
+              {/* dots */}
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {article.steps.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setDirection(i > stepIdx ? 1 : -1);
+                      setStepIdx(i);
+                    }}
+                    aria-label={`Go to step ${i + 1}`}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      i === stepIdx
+                        ? "w-8 bg-primary"
+                        : i < stepIdx
+                        ? "w-2 bg-primary/50"
+                        : "w-2 bg-muted-foreground/25 hover:bg-muted-foreground/50"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Animated step card */}
+            <div
+              key={stepIdx}
+              className={`rounded-3xl border border-border bg-card p-8 shadow-card-hover md:p-12 ${
+                direction === 1 ? "animate-slide-in-right" : "animate-slide-in-left"
+              }`}
+            >
+              <div className="flex flex-col items-center text-center">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                  Step {stepIdx + 1} of {total}
+                </span>
+
+                {/* Illustration placeholder */}
+                <div className="my-6 grid h-32 w-32 place-items-center rounded-3xl bg-gradient-primary text-primary-foreground shadow-card-hover animate-scale-in">
+                  <span className="text-5xl font-extrabold">{stepIdx + 1}</span>
+                </div>
+
+                <h3 className="text-3xl font-extrabold tracking-tight md:text-4xl">{step.title}</h3>
+                <p className="mt-4 max-w-xl text-lg leading-relaxed text-foreground/80">{step.body}</p>
+
+                <div className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                  <Clock className="h-3.5 w-3.5" /> About 1 min
+                </div>
+              </div>
+            </div>
+
+            {/* Nav */}
+            <div className="mt-6 flex items-center justify-between gap-3">
+              <button
+                onClick={prev}
+                disabled={stepIdx === 0}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground/80 transition-all duration-200 hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ArrowLeft className="h-4 w-4" /> Previous
+              </button>
+              <span className="hidden text-xs text-muted-foreground sm:inline">
+                Tip: use ← → arrow keys
+              </span>
+              <button
+                onClick={next}
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5 active:translate-y-0"
+              >
+                {isLast ? (
+                  <>
+                    Finish <CheckCircle2 className="h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    Next <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Helpful */}
+      <section className="mx-auto max-w-4xl px-6 pb-24">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5 shadow-card">
           <div className="text-sm text-muted-foreground">Was this article helpful?</div>
           <div className="flex gap-2">
             <button
               onClick={() => setHelpful("yes")}
-              className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm transition ${
-                helpful === "yes" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground/70 hover:bg-muted/70"
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                helpful === "yes"
+                  ? "bg-success/25 text-success-foreground"
+                  : "bg-muted text-foreground/70 hover:bg-muted/70"
               }`}
             >
               <ThumbsUp className="h-4 w-4" /> Yes
             </button>
             <button
               onClick={() => setHelpful("no")}
-              className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm transition ${
-                helpful === "no" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground/70 hover:bg-muted/70"
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                helpful === "no"
+                  ? "bg-critical/20 text-critical-foreground"
+                  : "bg-muted text-foreground/70 hover:bg-muted/70"
               }`}
             >
               <ThumbsDown className="h-4 w-4" /> No
             </button>
           </div>
         </div>
-      </article>
+        {helpful && (
+          <p className="mt-3 text-center text-sm text-muted-foreground animate-fade-in-up">
+            Thanks for the feedback — we use it to improve these guides.
+          </p>
+        )}
+      </section>
     </PageShell>
+  );
+}
+
+function CompletionCard({
+  article,
+  solved,
+  setSolved,
+  onRestart,
+}: {
+  article: Article;
+  solved: null | "yes" | "no";
+  setSolved: (s: "yes" | "no") => void;
+  onRestart: () => void;
+}) {
+  return (
+    <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-card-hover animate-scale-in">
+      {/* Success header */}
+      <div className="relative overflow-hidden bg-gradient-hero p-10 text-center text-navy-foreground md:p-14">
+        <div className="pointer-events-none absolute inset-0 opacity-20" aria-hidden="true">
+          <svg viewBox="0 0 400 200" className="h-full w-full">
+            <circle cx="80" cy="100" r="60" fill="none" stroke="currentColor" strokeDasharray="2 8" />
+            <circle cx="320" cy="100" r="80" fill="none" stroke="currentColor" strokeDasharray="2 8" />
+          </svg>
+        </div>
+        <div className="relative">
+          <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-success text-success-foreground shadow-card-hover animate-pulse-glow">
+            <PartyPopper className="h-10 w-10" />
+          </div>
+          <h3 className="mt-6 text-3xl font-extrabold tracking-tight md:text-4xl">You've completed all steps!</h3>
+          <p className="mt-3 text-white/80">
+            Nice work walking through "{article.title}". Let us know how it went.
+          </p>
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="p-8 md:p-10">
+        {solved === null && (
+          <div className="animate-fade-in-up">
+            <div className="text-center text-lg font-semibold">Issue resolved?</div>
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              <button
+                onClick={() => setSolved("yes")}
+                className="inline-flex items-center gap-2 rounded-full bg-success px-6 py-3 text-sm font-semibold text-success-foreground shadow-card transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5"
+              >
+                <Check className="h-4 w-4" /> Yes, it's fixed
+              </button>
+              <button
+                onClick={() => setSolved("no")}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all duration-200 hover:bg-muted hover:-translate-y-0.5"
+              >
+                <X className="h-4 w-4" /> Still need help
+              </button>
+            </div>
+          </div>
+        )}
+
+        {solved === "yes" && (
+          <div className="rounded-2xl bg-success/15 p-6 text-center animate-fade-in-up">
+            <div className="text-2xl">🎉</div>
+            <div className="mt-2 text-lg font-bold">Glad we could help!</div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              You can close this page or browse more popular fixes.
+            </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              <Link
+                to="/popular"
+                className="rounded-full bg-card border border-border px-4 py-2 text-xs font-semibold transition hover:bg-muted"
+              >
+                Browse popular fixes
+              </Link>
+              <button
+                onClick={onRestart}
+                className="rounded-full bg-card border border-border px-4 py-2 text-xs font-semibold transition hover:bg-muted"
+              >
+                Restart walkthrough
+              </button>
+            </div>
+          </div>
+        )}
+
+        {solved === "no" && (
+          <div className="rounded-2xl bg-surface-2 p-6 animate-slide-in-right">
+            <div className="text-center">
+              <div className="text-lg font-bold">Let's get a human involved.</div>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Open a support ticket. Include what you've already tried so the team can pick up where you left off.
+              </p>
+            </div>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              <a
+                href="https://example.zendesk.com/hc/en-us/requests/new"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-card transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5"
+              >
+                <Send className="h-4 w-4" /> Submit support ticket <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+              <button
+                onClick={onRestart}
+                className="rounded-full border border-border bg-card px-4 py-3 text-sm font-semibold transition hover:bg-muted"
+              >
+                Try the steps again
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

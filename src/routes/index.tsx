@@ -1,16 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Search, ArrowRight, Sparkles, Clock, TrendingUp } from "lucide-react";
+import { ArrowRight, Clock, Sparkles, TrendingUp, Zap } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CategoryTile } from "@/components/category-tile";
+import { SearchPanel } from "@/components/search-panel";
 import { articles, categories } from "@/data/articles";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "IT Support Hub — Solve IT issues in minutes" },
+      { title: "Sprinter IT Hub — Solve IT issues in minutes" },
       { name: "description", content: "Search clear, step-by-step fixes for common IT problems before opening a ticket." },
-      { property: "og:title", content: "IT Support Hub" },
+      { property: "og:title", content: "Sprinter IT Hub" },
       { property: "og:description", content: "Search clear, step-by-step fixes for common IT problems before opening a ticket." },
     ],
   }),
@@ -18,78 +18,65 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const [q, setQ] = useState("");
-  const results = useMemo(() => {
-    if (!q.trim()) return [];
-    const needle = q.toLowerCase();
-    return articles
-      .filter((a) => a.title.toLowerCase().includes(needle) || a.summary.toLowerCase().includes(needle))
-      .slice(0, 5);
-  }, [q]);
-
-  const popular = [...articles].sort((a, b) => b.views - a.views).slice(0, 3);
-  const recent = [...articles].sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated)).slice(0, 3);
+  const popular = [...articles].sort((a, b) => b.views - a.views).slice(0, 5);
+  const recent = [...articles].sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated)).slice(0, 5);
 
   return (
     <PageShell>
       {/* Hero */}
-      <section className="px-6 pt-8">
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-navy px-8 py-16 text-navy-foreground md:px-16 md:py-24">
+      <section className="px-4 pt-6 sm:px-6 sm:pt-8">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-hero px-6 py-16 text-navy-foreground sm:px-12 md:px-16 md:py-24">
           {/* decorative rings */}
-          <svg className="pointer-events-none absolute -right-24 -top-24 h-[28rem] w-[28rem] opacity-20" viewBox="0 0 400 400" fill="none">
+          <svg className="pointer-events-none absolute -right-32 -top-32 h-[34rem] w-[34rem] opacity-20" viewBox="0 0 400 400" fill="none" aria-hidden="true">
             <circle cx="200" cy="200" r="180" stroke="currentColor" strokeDasharray="2 8" />
             <circle cx="200" cy="200" r="140" stroke="currentColor" strokeDasharray="2 8" />
             <circle cx="200" cy="200" r="100" stroke="currentColor" strokeDasharray="2 8" />
+            <circle cx="200" cy="200" r="60" stroke="currentColor" strokeDasharray="2 8" />
           </svg>
+          <div className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-white/5 blur-3xl" aria-hidden="true" />
+
           <div className="relative max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-wider">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider backdrop-blur">
               <Sparkles className="h-3.5 w-3.5" /> Internal knowledge base
             </span>
-            <h1 className="mt-6 font-serif text-5xl leading-[1.05] md:text-7xl">
-              Solve IT issues<br />before they slow you down.
+            <h1 className="mt-6 text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
+              Solve IT issues<br />
+              <span className="bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+                before they slow you down.
+              </span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/80">
               Search clear, step-by-step fixes for the most common IT problems. Most issues are solved in under five minutes.
             </p>
 
-            <div className="relative mt-10">
-              <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground/50" />
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="What do you need help with today?"
-                className="h-16 w-full rounded-full border border-white/10 bg-white pl-14 pr-6 text-base text-foreground shadow-card outline-none ring-primary/30 placeholder:text-foreground/40 focus:ring-4"
-              />
-              {results.length > 0 && (
-                <div className="absolute left-0 right-0 top-[4.5rem] z-20 overflow-hidden rounded-2xl bg-card text-foreground shadow-card-hover">
-                  {results.map((a) => (
-                    <Link
-                      key={a.slug}
-                      to="/articles/$slug"
-                      params={{ slug: a.slug }}
-                      className="flex items-center justify-between gap-4 border-b border-border/60 px-5 py-3 last:border-b-0 hover:bg-muted"
-                    >
-                      <div>
-                        <div className="font-medium">{a.title}</div>
-                        <div className="text-sm text-muted-foreground">{a.summary}</div>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    </Link>
-                  ))}
-                </div>
-              )}
+            <div className="mt-10">
+              <SearchPanel variant="onDark" />
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-2 text-sm text-white/70">
-              <span>Try:</span>
+            <div className="mt-6 flex flex-wrap items-center gap-2 text-sm text-white/70">
+              <span className="font-medium">Try:</span>
               {["Wi-Fi", "VPN", "Forgot password", "Printer offline"].map((t) => (
-                <button
+                <Link
                   key={t}
-                  onClick={() => setQ(t)}
-                  className="rounded-full border border-white/15 px-3 py-1 transition hover:bg-white/10"
+                  to="/topics"
+                  className="rounded-full border border-white/20 bg-white/5 px-3 py-1 transition-all duration-200 hover:bg-white/15 hover:scale-105"
                 >
                   {t}
-                </button>
+                </Link>
+              ))}
+            </div>
+
+            {/* stat strip */}
+            <div className="mt-12 grid max-w-2xl grid-cols-3 gap-6 border-t border-white/15 pt-8">
+              {[
+                { v: "5 min", l: "Avg. resolution" },
+                { v: "9+", l: "Common fixes" },
+                { v: "24/7", l: "Self-service" },
+              ].map((s) => (
+                <div key={s.l}>
+                  <div className="text-2xl font-bold md:text-3xl">{s.v}</div>
+                  <div className="mt-1 text-xs uppercase tracking-wider text-white/60">{s.l}</div>
+                </div>
               ))}
             </div>
           </div>
@@ -97,88 +84,103 @@ function Home() {
       </section>
 
       {/* Categories */}
-      <section className="mx-auto max-w-7xl px-6 py-20">
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
         <div className="mb-10 flex items-end justify-between gap-6">
           <div>
-            <p className="text-sm font-medium uppercase tracking-wider text-primary">Browse topics</p>
-            <h2 className="mt-2 font-serif text-4xl md:text-5xl">Pick a category to get started.</h2>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Browse topics</p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-5xl">Pick a category to get started.</h2>
           </div>
-          <Link to="/topics" className="hidden text-sm text-muted-foreground hover:text-foreground md:inline">
-            See all topics →
+          <Link to="/topics" className="hidden items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:inline-flex">
+            See all topics <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {categories.map((c) => (
-            <CategoryTile key={c.slug} category={c} />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {categories.map((c, i) => (
+            <div key={c.slug} className="animate-fade-in-up" style={{ animationDelay: `${i * 40}ms` }}>
+              <CategoryTile category={c} />
+            </div>
           ))}
         </div>
       </section>
 
       {/* Popular + Recent */}
-      <section className="mx-auto max-w-7xl px-6 pb-20">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="rounded-2xl bg-card p-8 shadow-card">
-            <div className="mb-6 flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-primary">
-              <TrendingUp className="h-4 w-4" /> Popular articles
-            </div>
-            <ul className="divide-y divide-border/60">
-              {popular.map((a, i) => (
-                <li key={a.slug}>
-                  <Link
-                    to="/articles/$slug"
-                    params={{ slug: a.slug }}
-                    className="flex items-center justify-between gap-4 py-4 transition hover:text-primary"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className="font-serif text-2xl text-muted-foreground">0{i + 1}</span>
-                      <div>
-                        <div className="font-medium">{a.title}</div>
-                        <div className="text-sm text-muted-foreground">{a.views.toLocaleString()} views</div>
+      <section className="bg-surface py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-card p-8 shadow-card transition-shadow duration-300 hover:shadow-card-hover">
+              <div className="mb-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+                <TrendingUp className="h-4 w-4" /> Top 5 popular fixes
+              </div>
+              <ul className="divide-y divide-border/60">
+                {popular.map((a, i) => (
+                  <li key={a.slug}>
+                    <Link
+                      to="/articles/$slug"
+                      params={{ slug: a.slug }}
+                      className="group flex items-center justify-between gap-4 py-4 transition-colors"
+                    >
+                      <div className="flex min-w-0 items-center gap-4">
+                        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary-soft text-sm font-bold text-primary">
+                          {i + 1}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="truncate font-semibold transition-colors group-hover:text-primary">{a.title}</div>
+                          <div className="text-sm text-muted-foreground">{a.views.toLocaleString()} views</div>
+                        </div>
                       </div>
-                    </div>
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-2xl bg-card p-8 shadow-card">
-            <div className="mb-6 flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-primary">
-              <Clock className="h-4 w-4" /> Recently updated
+                      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="divide-y divide-border/60">
-              {recent.map((a) => (
-                <li key={a.slug}>
-                  <Link
-                    to="/articles/$slug"
-                    params={{ slug: a.slug }}
-                    className="flex items-center justify-between gap-4 py-4 transition hover:text-primary"
-                  >
-                    <div>
-                      <div className="font-medium">{a.title}</div>
-                      <div className="text-sm text-muted-foreground">Updated {a.lastUpdated}</div>
-                    </div>
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <div className="rounded-2xl border border-border bg-card p-8 shadow-card transition-shadow duration-300 hover:shadow-card-hover">
+              <div className="mb-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+                <Clock className="h-4 w-4" /> Recently updated
+              </div>
+              <ul className="divide-y divide-border/60">
+                {recent.map((a) => (
+                  <li key={a.slug}>
+                    <Link
+                      to="/articles/$slug"
+                      params={{ slug: a.slug }}
+                      className="group flex items-center justify-between gap-4 py-4"
+                    >
+                      <div className="min-w-0">
+                        <div className="truncate font-semibold transition-colors group-hover:text-primary">{a.title}</div>
+                        <div className="text-sm text-muted-foreground">Updated {a.lastUpdated}</div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Quick tips */}
-      <section className="mx-auto max-w-7xl px-6 pb-24">
-        <div className="rounded-2xl bg-muted p-10">
-          <h3 className="font-serif text-3xl">Quick tips before you submit a ticket</h3>
-          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
+        <div className="rounded-[2rem] border border-border bg-gradient-soft p-8 md:p-12">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+            <Zap className="h-4 w-4" /> Quick tips
+          </div>
+          <h3 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">Try these before opening a ticket.</h3>
+          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
             {[
-              { t: "Restart first", b: "A reboot fixes 70% of IT issues. Try it before anything else." },
-              { t: "Check the status page", b: "Some issues are company-wide outages we're already on." },
-              { t: "Use Self Service", b: "Install approved apps and updates without waiting on IT." },
+              { t: "Restart first", b: "A reboot fixes 70% of IT issues. Try it before anything else.", tone: "bg-primary-soft text-primary" },
+              { t: "Check the status page", b: "Some issues are company-wide outages we're already on.", tone: "bg-info/15 text-info-foreground" },
+              { t: "Use Self Service", b: "Install approved apps and updates without waiting on IT.", tone: "bg-success/20 text-success-foreground" },
             ].map((tip) => (
-              <div key={tip.t} className="rounded-xl bg-card p-6 shadow-card">
-                <div className="font-serif text-xl">{tip.t}</div>
+              <div
+                key={tip.t}
+                className="group rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+              >
+                <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${tip.tone}`}>
+                  Tip
+                </span>
+                <div className="mt-3 text-xl font-bold tracking-tight">{tip.t}</div>
                 <p className="mt-2 text-sm text-muted-foreground">{tip.b}</p>
               </div>
             ))}

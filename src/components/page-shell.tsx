@@ -3,9 +3,9 @@ import { SiteFooter, SiteNav } from "./site-nav";
 
 export function PageShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-dvh flex-col bg-background">
       <SiteNav />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 animate-fade-in-up">{children}</main>
       <SiteFooter />
     </div>
   );
