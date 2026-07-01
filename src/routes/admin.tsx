@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Activity, CheckCircle2, FileText, PencilLine } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { articles } from "@/data/articles";
 
 export const Route = createFileRoute("/admin")({
