@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, type LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import * as Icons from "lucide-react";
 import type { Category } from "@/data/articles";
 
