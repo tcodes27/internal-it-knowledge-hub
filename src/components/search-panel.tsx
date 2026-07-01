@@ -71,7 +71,7 @@ export function SearchPanel({
   }, [q]);
 
   const popular = useMemo(
-    () => [...articles].sort((a, b) => b.views - a.views).slice(0, 5),
+    () => [...articles].sort((a, b) => b.views - a.views).slice(0, 4),
     [],
   );
 
