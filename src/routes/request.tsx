@@ -23,9 +23,10 @@ function RequestPage() {
 
   return (
     <PageShell>
-      <section className="mx-auto max-w-2xl px-6 pt-16 pb-24">
+      <section className="mx-auto max-w-2xl px-6 pt-10 pb-24">
+        <Breadcrumbs items={[{ label: "Submit a Request" }]} />
         <p className="text-sm font-medium uppercase tracking-wider text-primary">Submit a request</p>
-        <h1 className="mt-2 font-serif text-5xl">Suggest a new help article.</h1>
+        <h1 className="mt-2 text-4xl font-extrabold tracking-tight md:text-5xl">Suggest a new help article.</h1>
         <p className="mt-3 text-lg text-muted-foreground">
           Tell us what's missing. We'll review, write it up, and publish it to the knowledge base.
         </p>
