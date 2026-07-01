@@ -84,7 +84,10 @@ export function CategoryModal({
                     {all.length} article{all.length === 1 ? "" : "s"}
                   </span>
                 </div>
-                <DialogClose className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                <DialogClose
+                  aria-label="Close"
+                  className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
                   <X className="h-5 w-5" />
                   <span className="sr-only">Close</span>
                 </DialogClose>
