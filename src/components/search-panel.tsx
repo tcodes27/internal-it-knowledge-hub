@@ -164,7 +164,7 @@ export function SearchPanel({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 right-0 top-[4.5rem] z-30 origin-top overflow-hidden rounded-2xl border border-border bg-popover text-popover-foreground shadow-card-hover animate-scale-in"
+          className="absolute left-0 right-0 top-[calc(100%+12px)] z-50 max-h-[60vh] overflow-y-auto rounded-2xl border border-border bg-popover text-popover-foreground shadow-card-hover animate-scale-in"
         >
           <div className="flex items-center justify-between border-b border-border/60 px-5 py-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
@@ -186,7 +186,7 @@ export function SearchPanel({
             </span>
           </div>
 
-          <div className="max-h-[70vh] overflow-y-auto overscroll-contain scroll-smooth">
+          <div className="py-1">
             {noResults ? (
               <div className="px-6 py-10 text-center animate-fade-in-up">
                 <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-primary-soft text-primary">
@@ -250,7 +250,7 @@ export function SearchPanel({
                         onMouseEnter={() => setActive(i)}
                         role="option"
                         aria-selected={i === active}
-                        className={`group flex items-start justify-between gap-4 border-b border-border/40 px-5 py-4 last:border-b-0 transition-all ${
+                        className={`group flex items-start justify-between gap-4 border-b border-border/40 px-5 py-3.5 last:border-b-0 transition-all ${
                           i === active ? "bg-primary-soft" : "hover:bg-muted"
                         }`}
                       >
