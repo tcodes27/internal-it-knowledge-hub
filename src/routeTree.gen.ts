@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TopicsRouteImport } from './routes/topics'
 import { Route as RequestRouteImport } from './routes/request'
-import { Route as PopularRouteImport } from './routes/popular'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -26,11 +25,6 @@ const TopicsRoute = TopicsRouteImport.update({
 const RequestRoute = RequestRouteImport.update({
   id: '/request',
   path: '/request',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PopularRoute = PopularRouteImport.update({
-  id: '/popular',
-  path: '/popular',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -63,7 +57,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/popular': typeof PopularRoute
   '/request': typeof RequestRoute
   '/topics': typeof TopicsRouteWithChildren
   '/articles/$slug': typeof ArticlesSlugRoute
@@ -73,7 +66,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/popular': typeof PopularRoute
   '/request': typeof RequestRoute
   '/topics': typeof TopicsRouteWithChildren
   '/articles/$slug': typeof ArticlesSlugRoute
@@ -84,7 +76,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/popular': typeof PopularRoute
   '/request': typeof RequestRoute
   '/topics': typeof TopicsRouteWithChildren
   '/articles/$slug': typeof ArticlesSlugRoute
@@ -96,7 +87,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/how-it-works'
-    | '/popular'
     | '/request'
     | '/topics'
     | '/articles/$slug'
@@ -106,7 +96,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/how-it-works'
-    | '/popular'
     | '/request'
     | '/topics'
     | '/articles/$slug'
@@ -116,7 +105,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/how-it-works'
-    | '/popular'
     | '/request'
     | '/topics'
     | '/articles/$slug'
@@ -127,7 +115,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   HowItWorksRoute: typeof HowItWorksRoute
-  PopularRoute: typeof PopularRoute
   RequestRoute: typeof RequestRoute
   TopicsRoute: typeof TopicsRouteWithChildren
   ArticlesSlugRoute: typeof ArticlesSlugRoute
@@ -147,13 +134,6 @@ declare module '@tanstack/react-router' {
       path: '/request'
       fullPath: '/request'
       preLoaderRoute: typeof RequestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/popular': {
-      id: '/popular'
-      path: '/popular'
-      fullPath: '/popular'
-      preLoaderRoute: typeof PopularRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -209,7 +189,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   HowItWorksRoute: HowItWorksRoute,
-  PopularRoute: PopularRoute,
   RequestRoute: RequestRoute,
   TopicsRoute: TopicsRouteWithChildren,
   ArticlesSlugRoute: ArticlesSlugRoute,
