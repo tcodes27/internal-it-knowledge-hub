@@ -111,14 +111,15 @@ function ArticlePage() {
     <PageShell>
       {/* Header */}
       <section className="border-b border-border/60 bg-gradient-soft">
-        <div className="mx-auto max-w-4xl px-6 pt-10 pb-12">
-          <Link
-            to="/topics/$slug"
-            params={{ slug: article.category }}
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-          >
-            <ArrowLeft className="h-4 w-4" /> {category?.name}
-          </Link>
+        <div className="mx-auto max-w-4xl px-6 pt-8 pb-12">
+          <Breadcrumbs
+            items={[
+              { label: "Browse Topics", to: "/topics" },
+              ...(category ? [{ label: category.name, to: "/topics/$slug", params: { slug: category.slug } }] : []),
+              { label: article.title },
+            ]}
+          />
+
 
           <div className="mt-5 flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
