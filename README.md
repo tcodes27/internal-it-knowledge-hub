@@ -74,7 +74,7 @@ The result is a self-reinforcing knowledge base: every support interaction becom
 | 📱 Responsive Design | Fully optimized for desktop, tablet, and mobile devices. |
 | 🌙 Light & Dark Mode | Theme-aware UI that respects user preference and reduces eye strain. |
 | ♿ Accessibility-Focused Design | Semantic markup, keyboard navigation, focus states, and screen-reader friendly structure. |
-| 🧩 Modern UI Components | Built with a polished component system for consistent, maintainable interfaces. |
+| 🧩 Modern UI Components | Implemented using a polished component system for consistent, maintainable interfaces. |
 | ✨ Microinteractions | Hover states, transitions, animations, and visual feedback that make the app feel alive. |
 | 💡 Search Suggestions | Popular searches and recent queries surfaced directly from the search experience. |
 | 📚 Documentation Governance | Concepts for review, approval, and publication workflows to ensure quality and consistency. |
