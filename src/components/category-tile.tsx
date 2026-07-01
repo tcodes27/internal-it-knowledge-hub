@@ -12,14 +12,21 @@ const toneBg: Record<Category["tone"], string> = {
   pink: "bg-accent/30 text-accent-foreground",
 };
 
-export function CategoryTile({ category, count }: { category: Category; count?: number }) {
+export function CategoryTile({
+  category,
+  count,
+  onSelect,
+}: {
+  category: Category;
+  count?: number;
+  onSelect?: (category: Category) => void;
+}) {
   const Icon = (Icons as unknown as Record<string, LucideIcon>)[category.icon] ?? Icons.Folder;
-  return (
-    <Link
-      to="/topics/$slug"
-      params={{ slug: category.slug }}
-      className="group relative flex h-full cursor-pointer flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.015] hover:border-primary/50 hover:shadow-card-hover focus-visible:border-primary/50"
-    >
+  const className =
+    "group relative flex h-full w-full text-left cursor-pointer flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.015] hover:border-primary/50 hover:shadow-card-hover focus-visible:border-primary/50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20";
+
+  const inner = (
+    <>
       {/* soft radial glow */}
       <span
         aria-hidden="true"
