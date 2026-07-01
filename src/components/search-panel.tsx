@@ -71,7 +71,7 @@ export function SearchPanel({
   }, [q]);
 
   const popular = useMemo(
-    () => [...articles].sort((a, b) => b.views - a.views).slice(0, 5),
+    () => [...articles].sort((a, b) => b.views - a.views).slice(0, 4),
     [],
   );
 
@@ -164,7 +164,7 @@ export function SearchPanel({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 right-0 top-[calc(100%+12px)] z-50 max-h-[60vh] overflow-y-auto rounded-2xl border border-border bg-popover text-popover-foreground shadow-card-hover animate-scale-in"
+          className="absolute left-0 right-0 top-[calc(100%+12px)] z-50 flex max-h-[420px] w-full flex-col overflow-hidden rounded-3xl border border-border bg-popover text-popover-foreground shadow-card-hover animate-scale-in"
         >
           <div className="flex items-center justify-between border-b border-border/60 px-5 py-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
@@ -186,7 +186,7 @@ export function SearchPanel({
             </span>
           </div>
 
-          <div className="py-1">
+          <div className="flex-1 overflow-y-auto py-1">
             {noResults ? (
               <div className="px-6 py-10 text-center animate-fade-in-up">
                 <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-primary-soft text-primary">
