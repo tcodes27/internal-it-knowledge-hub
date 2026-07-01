@@ -23,7 +23,7 @@ export function CategoryTile({
 }) {
   const Icon = (Icons as unknown as Record<string, LucideIcon>)[category.icon] ?? Icons.Folder;
   const className =
-    "group relative flex h-full w-full text-left cursor-pointer flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.015] hover:border-primary/50 hover:shadow-card-hover focus-visible:border-primary/50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20";
+    "group relative flex h-full w-full text-left cursor-pointer flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-card transition-all duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.015] hover:border-primary hover:shadow-card-hover focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20";
 
   const inner = (
     <>
@@ -44,7 +44,6 @@ export function CategoryTile({
         >
           <Icon className="h-6 w-6" strokeWidth={2.2} />
         </span>
-        <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-primary" />
       </div>
       <div className="relative">
         <div className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
