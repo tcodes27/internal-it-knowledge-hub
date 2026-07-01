@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, Search, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowRight, Clock, Search, Sparkles, X, type LucideIcon } from "lucide-react";
 import * as Icons from "lucide-react";
 import { useMemo, useState, useEffect } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
