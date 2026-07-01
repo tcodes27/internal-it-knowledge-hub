@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, Sparkles, TrendingUp, Zap } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CategoryTile } from "@/components/category-tile";
 import { SearchPanel } from "@/components/search-panel";
-import { articles, categories } from "@/data/articles";
+import { CategoryModal } from "@/components/category-modal";
+import { categories, type Category } from "@/data/articles";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,10 +21,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const popular = [...articles].sort((a, b) => b.views - a.views).slice(0, 5);
-  const recent = [...articles].sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated)).slice(0, 5);
+  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+  const previewCategories = categories.slice(0, 8);
 
   return (
+
     <PageShell>
       {/* Hero */}
       <section className="px-4 pt-6 sm:px-6 sm:pt-8">
@@ -95,70 +99,19 @@ function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {categories.map((c, i) => (
+          {previewCategories.map((c, i) => (
             <div key={c.slug} className="animate-fade-in-up" style={{ animationDelay: `${i * 40}ms` }}>
-              <CategoryTile category={c} />
+              <CategoryTile category={c} onSelect={setActiveCategory} />
             </div>
           ))}
         </div>
-      </section>
-
-      {/* Popular + Recent */}
-      <section className="bg-surface py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-border bg-card p-8 shadow-card transition-shadow duration-300 hover:shadow-card-hover">
-              <div className="mb-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
-                <TrendingUp className="h-4 w-4" /> Top 5 popular fixes
-              </div>
-              <ul className="divide-y divide-border/60">
-                {popular.map((a, i) => (
-                  <li key={a.slug}>
-                    <Link
-                      to="/articles/$slug"
-                      params={{ slug: a.slug }}
-                      className="group flex items-center justify-between gap-4 py-4 transition-colors"
-                    >
-                      <div className="flex min-w-0 items-center gap-4">
-                        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary-soft text-sm font-bold text-primary">
-                          {i + 1}
-                        </span>
-                        <div className="min-w-0">
-                          <div className="truncate font-semibold transition-colors group-hover:text-primary">{a.title}</div>
-                          <div className="text-sm text-muted-foreground">{a.views.toLocaleString()} views</div>
-                        </div>
-                      </div>
-                      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-2xl border border-border bg-card p-8 shadow-card transition-shadow duration-300 hover:shadow-card-hover">
-              <div className="mb-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
-                <Clock className="h-4 w-4" /> Recently updated
-              </div>
-              <ul className="divide-y divide-border/60">
-                {recent.map((a) => (
-                  <li key={a.slug}>
-                    <Link
-                      to="/articles/$slug"
-                      params={{ slug: a.slug }}
-                      className="group flex items-center justify-between gap-4 py-4"
-                    >
-                      <div className="min-w-0">
-                        <div className="truncate font-semibold transition-colors group-hover:text-primary">{a.title}</div>
-                        <div className="text-sm text-muted-foreground">Updated {a.lastUpdated}</div>
-                      </div>
-                      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+        <div className="mt-8 flex justify-center md:hidden">
+          <Link to="/topics" className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary">
+            View all topics <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
+
 
       {/* Quick tips */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
@@ -187,6 +140,13 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <CategoryModal
+        category={activeCategory}
+        open={!!activeCategory}
+        onOpenChange={(o) => !o && setActiveCategory(null)}
+      />
     </PageShell>
   );
 }
+
