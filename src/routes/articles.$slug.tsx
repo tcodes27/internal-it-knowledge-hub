@@ -337,6 +337,61 @@ function ArticlePage() {
           </p>
         )}
       </section>
+
+      {/* Prev / Next Article */}
+      {(prevArticle || nextArticle) && (
+        <section className="mx-auto max-w-4xl px-6 pb-24">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              More in {category?.name}
+            </div>
+            <Link
+              to="/topics/$slug"
+              params={{ slug: article.category }}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80"
+            >
+              All articles <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {prevArticle ? (
+              <Link
+                to="/articles/$slug"
+                params={{ slug: prevArticle.slug }}
+                className="group flex cursor-pointer flex-col gap-2 rounded-2xl border border-border bg-card p-5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-card-hover"
+              >
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors group-hover:text-primary">
+                  <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1" />
+                  Previous
+                </span>
+                <div className="text-base font-bold tracking-tight transition-colors group-hover:text-primary">
+                  {prevArticle.title}
+                </div>
+                <div className="line-clamp-1 text-sm text-muted-foreground">{prevArticle.summary}</div>
+              </Link>
+            ) : (
+              <div />
+            )}
+            {nextArticle && (
+              <Link
+                to="/articles/$slug"
+                params={{ slug: nextArticle.slug }}
+                className="group flex cursor-pointer flex-col items-end gap-2 rounded-2xl border border-border bg-card p-5 text-right shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-card-hover md:col-start-2"
+              >
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors group-hover:text-primary">
+                  Next
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                </span>
+                <div className="text-base font-bold tracking-tight transition-colors group-hover:text-primary">
+                  {nextArticle.title}
+                </div>
+                <div className="line-clamp-1 text-sm text-muted-foreground">{nextArticle.summary}</div>
+              </Link>
+            )}
+          </div>
+        </section>
+      )}
+
     </PageShell>
   );
 }
