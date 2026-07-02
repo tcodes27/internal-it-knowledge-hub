@@ -14,10 +14,6 @@ Internal knowledge management platform designed to help organizations reduce rep
 
 ---
 
-## Application Preview
-
-> Screenshot placeholders will be replaced with actual images before repository publication.
-
 ### Homepage
 
 ![Homepage Screenshot](images/homepage.png)
