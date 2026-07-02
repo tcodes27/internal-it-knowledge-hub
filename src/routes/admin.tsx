@@ -25,6 +25,7 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { RequestForm } from "@/components/request-form";
+import { AutomationDemo } from "@/components/automation-demo";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { articles, categories } from "@/data/articles";
 import { useInView } from "@/hooks/use-in-view";
@@ -244,6 +245,14 @@ function AdminPage() {
         description="How a request becomes a published article."
       />
       <WorkflowSection />
+
+      {/* SECTION 3.5 — Automation Workflow Demo */}
+      <SectionHeader
+        eyebrow="Section 3.5 · MVP Concept Demo"
+        title="Automation workflow demo"
+        description="A visual preview of the production automation using Google Workspace, Make.com, and Slack."
+      />
+      <AutomationDemo />
 
       {/* SECTION 4 — Best Practices */}
       <SectionHeader
