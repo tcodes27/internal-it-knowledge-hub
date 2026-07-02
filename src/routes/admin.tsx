@@ -245,6 +245,14 @@ function AdminPage() {
       />
       <WorkflowSection />
 
+      {/* SECTION 3.5 — Automation Workflow Demo */}
+      <SectionHeader
+        eyebrow="Section 3.5 · MVP Concept Demo"
+        title="Automation workflow demo"
+        description="A visual preview of the production automation using Google Workspace, Make.com, and Slack."
+      />
+      <AutomationDemo />
+
       {/* SECTION 4 — Best Practices */}
       <SectionHeader
         eyebrow="Section 4"
