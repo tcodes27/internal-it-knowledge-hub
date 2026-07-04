@@ -228,6 +228,48 @@ src/
 
 ---
 
+## Current MVP Scope
+
+The current release is a foundational, employee-facing knowledge hub for fast self-service and documentation governance. It organizes approved documentation, helps employees search and follow guides, and provides an admin interface for managing content and requests.
+
+Core capabilities include:
+
+- **Modern employee-facing knowledge hub**
+- **Intelligent article search** with suggestions and keyword highlighting
+- **Interactive troubleshooting walkthroughs** with step-by-step guidance
+- **Category-based documentation** across hardware, software, networking, security, and onboarding
+- **Documentation request workflow** for capturing missing knowledge
+- **Admin dashboard** with analytics and quick actions
+- **MVP analytics dashboard and workflow visualization** showing knowledge health and request-to-publication flow
+- **Responsive design** optimized for desktop, tablet, and mobile
+- **Light & Dark mode** and **accessibility-focused UI**
+- **Enterprise-inspired user experience** designed for clarity and trust
+
+The MVP intentionally validates the user experience, documentation workflow, and operational processes before expanding into deeper automation and enterprise integrations.
+
+---
+
+## Phase 2 — Knowledge Capture Platform
+
+Building on the current MVP, Phase 2 expands Sprinter IT Hub into a broader knowledge capture platform. It will help organizations capture, organize, operationalize, and maintain institutional knowledge across teams and systems.
+
+Future capabilities will include:
+
+- **Importing knowledge from existing business systems** to centralize scattered information
+- **Transforming scattered knowledge into structured documentation** for consistent reuse
+- **Streamlining review and approval workflows** for validating knowledge before publication
+- **Supporting multiple documentation sources** in a single, searchable destination
+- **Reducing manual documentation effort** by simplifying capture and publishing
+- **Improving organizational knowledge retention** and reducing dependency on individual employees
+- **Strengthening employee self-service experiences** by surfacing the right information at the right time
+- **Providing operational insights into documentation health** with visibility into content gaps and usage
+
+The long-term vision is to establish a single source of truth for organizational knowledge, enabling teams to consistently capture, validate, publish, and maintain critical operational information as the business grows.
+
+> **MVP Note:** The current release delivers an intuitive documentation experience. Future phases will expand knowledge capture capabilities while maintaining the same simple, scalable user experience.
+
+---
+
 ## Future Roadmap
 
 | Initiative | Description |
