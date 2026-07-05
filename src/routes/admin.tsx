@@ -86,6 +86,136 @@ const bestPractices = [
   "Always verify technical accuracy.",
 ];
 
+const captureSources: CaptureItem[] = [
+  {
+    key: "manual",
+    title: "Manual Capture",
+    description: "Submit a documentation request directly from your team.",
+    fileType: "Available now",
+    icon: PencilLine,
+    tone: "bg-primary-soft text-primary",
+    available: true,
+  },
+  {
+    key: "pdf",
+    title: "Upload PDF",
+    description: "Import existing PDF runbooks and reference docs.",
+    fileType: "PDF · .pdf",
+    icon: FileText,
+    tone: "bg-coral/30 text-navy",
+  },
+  {
+    key: "word",
+    title: "Upload Word Document",
+    description: "Bring in Word documents authored by IT and Ops.",
+    fileType: "Word · .docx",
+    icon: FileType,
+    tone: "bg-info/30 text-navy",
+  },
+  {
+    key: "excel",
+    title: "Upload Excel Spreadsheet",
+    description: "Extract structured knowledge from Excel workbooks.",
+    fileType: "Excel · .xlsx",
+    icon: FileSpreadsheet,
+    tone: "bg-mint/40 text-navy",
+  },
+  {
+    key: "csv",
+    title: "Upload CSV",
+    description: "Bulk import tabular knowledge from CSV exports.",
+    fileType: "CSV · .csv",
+    icon: TableIcon,
+    tone: "bg-amber/40 text-navy",
+  },
+];
+
+const connectedSystems: CaptureItem[] = [
+  {
+    key: "gdocs",
+    title: "Google Docs",
+    description: "Sync existing Google Docs directly into the hub.",
+    fileType: "Google Workspace",
+    icon: FileText,
+    tone: "bg-info/30 text-navy",
+  },
+  {
+    key: "gsheets",
+    title: "Google Sheets",
+    description: "Import structured content from Google Sheets.",
+    fileType: "Google Workspace",
+    icon: FileSpreadsheet,
+    tone: "bg-mint/40 text-navy",
+  },
+  {
+    key: "zendesk",
+    title: "Zendesk Export",
+    description: "Turn resolved tickets into reusable knowledge.",
+    fileType: "Zendesk · export",
+    icon: MessageSquare,
+    tone: "bg-amber/40 text-navy",
+  },
+  {
+    key: "gmail",
+    title: "Gmail",
+    description: "Capture recurring answers hidden inside email threads.",
+    fileType: "Google Workspace",
+    icon: Mail,
+    tone: "bg-coral/30 text-navy",
+  },
+  {
+    key: "slack",
+    title: "Slack",
+    description: "Promote high-signal Slack answers into documentation.",
+    fileType: "Slack · workspace",
+    icon: Zap,
+    tone: "bg-primary-soft text-primary",
+  },
+];
+
+const aiProcessing: CaptureItem[] = [
+  {
+    key: "extract",
+    title: "Extract Procedures",
+    description: "Detect step-by-step procedures inside imported files.",
+    fileType: "AI · extraction",
+    icon: Wand2,
+    tone: "bg-primary-soft text-primary",
+  },
+  {
+    key: "generate",
+    title: "Generate Knowledge Article",
+    description: "Draft polished KB articles from raw source content.",
+    fileType: "AI · drafting",
+    icon: Sparkles,
+    tone: "bg-info/30 text-navy",
+  },
+  {
+    key: "duplicate",
+    title: "Detect Duplicate Documentation",
+    description: "Flag near-duplicate articles before they clutter the hub.",
+    fileType: "AI · deduplication",
+    icon: Copy,
+    tone: "bg-coral/30 text-navy",
+  },
+  {
+    key: "categories",
+    title: "Suggest Categories",
+    description: "Recommend the best category based on article content.",
+    fileType: "AI · classification",
+    icon: FolderTree,
+    tone: "bg-mint/40 text-navy",
+  },
+  {
+    key: "tags",
+    title: "Recommend Tags",
+    description: "Auto-suggest relevant tags to improve discoverability.",
+    fileType: "AI · tagging",
+    icon: Tag,
+    tone: "bg-amber/40 text-navy",
+  },
+];
+
 type ModalKind = "submit" | "edit" | "create" | "analytics" | null;
 
 type CaptureItem = {
