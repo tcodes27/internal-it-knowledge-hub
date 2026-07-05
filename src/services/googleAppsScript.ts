@@ -129,8 +129,9 @@ export function updateDocumentationRequestStatus(
   requestId: string,
   status: DocumentationRequestStatus,
 ): Promise<ApiResult<{ id: string; status: DocumentationRequestStatus }>> {
-  return postToAppsScript("updateDocumentationRequestStatus", {
-    requestId,
+  return postToAppsScript("update_request_status", {
+    action: "update_request_status",
+    request_id: requestId,
     status,
   });
 }
