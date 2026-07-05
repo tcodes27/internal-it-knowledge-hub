@@ -20,8 +20,10 @@ export type ApiResult<T = unknown> =
 /** Known Apps Script actions. Extend as more endpoints are added. */
 export type AppsScriptAction =
   | "submitDocumentationRequest"
+  | "submit_request"
   | "getDocumentationRequests"
   | "updateDocumentationRequestStatus"
+  | "update_request_status"
   | "submitArticleFeedback";
 
 interface AppsScriptPayload<TPayload = unknown> {
