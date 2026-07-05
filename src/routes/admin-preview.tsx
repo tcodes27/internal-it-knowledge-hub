@@ -10,7 +10,7 @@ import { ArticleView, ArticlePreviewBanner } from "./articles.$slug";
  * public /articles/$slug route. Lets editors verify how content imported
  * from Google Sheets / Docs / CSV / Zendesk will look before publishing.
  */
-export const Route = createFileRoute("/admin/preview")({
+export const Route = createFileRoute("/admin-preview")({
   head: () => ({
     meta: [
       { title: "Article preview — Sprinter IT Hub Admin" },
