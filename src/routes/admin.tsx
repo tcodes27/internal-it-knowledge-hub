@@ -1,6 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType } from "react";
-import { getDocumentationRequests, type DocumentationRequest } from "@/services/googleAppsScript";
+import {
+  getDocumentationRequests,
+  updateDocumentationRequestStatus,
+  DOCUMENTATION_REQUEST_STATUSES,
+  type DocumentationRequest,
+  type DocumentationRequestStatus,
+} from "@/services/googleAppsScript";
+import { Loader2, X, CheckCircle, AlertCircle } from "lucide-react";
 import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import {
   Activity,
