@@ -76,6 +76,16 @@ const bestPractices = [
 
 type ModalKind = "submit" | "edit" | "create" | "analytics" | null;
 
+type CaptureItem = {
+  key: string;
+  title: string;
+  description: string;
+  fileType: string;
+  icon: ComponentType<{ className?: string }>;
+  tone: string;
+  available?: boolean;
+};
+
 function AdminPage() {
   const [modal, setModal] = useState<ModalKind>(null);
   const total = articles.length;
