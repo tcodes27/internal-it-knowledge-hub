@@ -12,39 +12,33 @@
 
 const API_URL = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL as string | undefined;
 
-/** Standard response shape returned by every service function. */
-export type ApiResult<T = unknown> =
-  | { success: true; data: T }
-  | { success: false; message: string; error?: unknown };
+export type ApiResult<T = unknown> = { success: true; data: T } | { success: false; message: string; error?: unknown };
 
-/** Known Apps Script actions. Extend as more endpoints are added. */
-export type AppsScriptAction =
-  | "submitDocumentationRequest"
-  | "submit_request"
-  | "getDocumentationRequests"
-  | "updateDocumentationRequestStatus"
-  | "update_request_status"
-  | "submitArticleFeedback";
-
-interface AppsScriptPayload<TPayload = unknown> {
-  action: AppsScriptAction;
-  payload?: TPayload;
-}
-
-/** Domain payload types. Kept intentionally loose to match imported content. */
 export interface DocumentationRequestInput {
   title: string;
   category?: string;
   description?: string;
+  priority?: string;
   submittedBy?: string;
+  source?: string;
+  owner?: string;
+  notes?: string;
   [key: string]: unknown;
 }
 
-export interface DocumentationRequest extends DocumentationRequestInput {
-  id: string;
+export interface DocumentationRequest {
+  request_id: string;
+  title: string;
+  category: string;
+  description: string;
+  priority: string;
   status: string;
-  createdAt: string;
-  updatedAt?: string;
+  submitted_by: string;
+  source: string;
+  created_at: string;
+  updated_at: string;
+  owner?: string;
+  notes?: string;
 }
 
 export const DOCUMENTATION_REQUEST_STATUSES = [
@@ -59,88 +53,114 @@ export const DOCUMENTATION_REQUEST_STATUSES = [
 export type DocumentationRequestStatus = (typeof DOCUMENTATION_REQUEST_STATUSES)[number];
 
 export interface ArticleFeedbackInput {
-  articleSlug: string;
+  article_id?: string;
+  article_slug?: string;
   helpful: boolean;
   comment?: string;
-  submittedBy?: string;
-  [key: string]: unknown;
 }
 
-/** Reusable low-level POST helper. */
-async function postToAppsScript<TResponse = unknown, TPayload = unknown>(
-  action: AppsScriptAction,
-  payload?: TPayload,
-): Promise<ApiResult<TResponse>> {
+async function postToAppsScript<T = unknown>(body: Record<string, unknown>): Promise<ApiResult<T>> {
   if (!API_URL) {
     return {
       success: false,
-      message: "Google Apps Script endpoint has not been configured.",
+      message: "Apps Script URL not configured.",
     };
   }
 
   try {
-    const body: AppsScriptPayload<TPayload> = { action, payload };
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
-        // Use text/plain to avoid triggering a CORS preflight (OPTIONS) request.
-        // Apps Script Web Apps do not respond to OPTIONS, so JSON content-types
-        // cause a 405. The body is still JSON-encoded and parsed server-side.
         "Content-Type": "text/plain;charset=utf-8",
       },
       body: JSON.stringify(body),
     });
 
-    if (!response.ok) {
+    const json = await response.json();
+
+    if (!json.success) {
       return {
         success: false,
-        message: `Request failed with status ${response.status}.`,
+        message: json.message ?? "Apps Script returned an error.",
       };
     }
 
-    const data = (await response.json()) as TResponse;
-    return { success: true, data };
+    return {
+      success: true,
+      data: json,
+    };
   } catch (error) {
     return {
       success: false,
-      message: "Unable to reach the Google Apps Script endpoint.",
+      message: "Unable to reach Google Apps Script.",
       error,
     };
   }
 }
 
-/** Submit a new documentation request from the request form. */
-export function submitDocumentationRequest(
-  data: DocumentationRequestInput,
-): Promise<ApiResult<{ id: string }>> {
-  return postToAppsScript("submitDocumentationRequest", data);
+/* -------------------------------------------------------------------------- */
+/* Submit Documentation Request                                                */
+/* -------------------------------------------------------------------------- */
+
+export function submitDocumentationRequest(data: DocumentationRequestInput) {
+  return postToAppsScript({
+    action: "submitDocumentationRequest",
+
+    title: data.title,
+    category: data.category,
+    description: data.description,
+    priority: data.priority ?? "Medium",
+
+    submittedBy: data.submittedBy ?? "Employee",
+
+    source: data.source ?? "Knowledge Capture Hub",
+
+    owner: data.owner ?? "",
+
+    notes: data.notes ?? "",
+  });
 }
 
-/** Fetch all documentation requests (used by the Admin dashboard). */
-export function getDocumentationRequests(): Promise<
-  ApiResult<DocumentationRequest[]>
-> {
-  return postToAppsScript("getDocumentationRequests");
+/* -------------------------------------------------------------------------- */
+/* Get Requests                                                                */
+/* -------------------------------------------------------------------------- */
+
+export function getDocumentationRequests() {
+  return postToAppsScript({
+    action: "getDocumentationRequests",
+  });
 }
 
-/** Update the status of an existing documentation request. */
-export function updateDocumentationRequestStatus(
-  requestId: string,
-  status: DocumentationRequestStatus,
-): Promise<ApiResult<{ id: string; status: DocumentationRequestStatus }>> {
-  return postToAppsScript("update_request_status", {
-    action: "update_request_status",
+/* -------------------------------------------------------------------------- */
+/* Update Status                                                               */
+/* -------------------------------------------------------------------------- */
+
+export function updateDocumentationRequestStatus(requestId: string, status: DocumentationRequestStatus) {
+  return postToAppsScript({
+    action: "updateDocumentationRequestStatus",
+
     request_id: requestId,
+
     status,
   });
 }
 
-/** Submit end-user feedback for an article. */
-export function submitArticleFeedback(
-  data: ArticleFeedbackInput,
-): Promise<ApiResult<{ id: string }>> {
-  return postToAppsScript("submitArticleFeedback", data);
+/* -------------------------------------------------------------------------- */
+/* Feedback                                                                    */
+/* -------------------------------------------------------------------------- */
+
+export function submitArticleFeedback(data: ArticleFeedbackInput) {
+  return postToAppsScript({
+    action: "submitArticleFeedback",
+
+    article_id: data.article_id,
+
+    article_slug: data.article_slug,
+
+    helpful: data.helpful,
+
+    comment: data.comment ?? "",
+  });
 }
 
-/** Convenience flag for UI code — true when the endpoint is configured. */
 export const isAppsScriptConfigured = Boolean(API_URL);
