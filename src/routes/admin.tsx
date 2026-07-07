@@ -1052,22 +1052,48 @@ function LiveRequestsSection() {
 
           {state.status === "ready" && state.data.length > 0 && (
             <ul className="grid gap-3">
-              {state.data.map((r, idx) => {
-                const rid = String(
-                  (r as unknown as Record<string, unknown>).id ??
-                    (r as unknown as Record<string, unknown>).request_id ??
-                    (r as unknown as Record<string, unknown>).requestId ??
-                    idx,
-                );
-                return (
-                  <RequestRow
-                    key={rid}
-                    req={r}
-                    updating={updatingId === rid}
-                    onStatusChange={(s) => handleStatusChange(rid, s)}
-                  />
-                );
-              })}
+              {state.data
+                .reduce((acc: DocumentationRequest[], r) => {
+                  const status = normalizeStatus(
+                    String(
+                      (r as unknown as Record<string, unknown>).status ??
+                        (r as unknown as Record<string, unknown>).Status ??
+                        "New",
+                    ),
+                  );
+                  if (
+                    ["New", "In Review", "Drafting", "Approved", "Published"].includes(status) &&
+                    !acc.some((item) => {
+                      const itemStatus = normalizeStatus(
+                        String(
+                          (item as unknown as Record<string, unknown>).status ??
+                            (item as unknown as Record<string, unknown>).Status ??
+                            "New",
+                        ),
+                      );
+                      return itemStatus === status;
+                    })
+                  ) {
+                    acc.push(r);
+                  }
+                  return acc;
+                }, [])
+                .map((r, idx) => {
+                  const rid = String(
+                    (r as unknown as Record<string, unknown>).id ??
+                      (r as unknown as Record<string, unknown>).request_id ??
+                      (r as unknown as Record<string, unknown>).requestId ??
+                      idx,
+                  );
+                  return (
+                    <RequestRow
+                      key={rid}
+                      req={r}
+                      updating={updatingId === rid}
+                      onStatusChange={(s) => handleStatusChange(rid, s)}
+                    />
+                  );
+                })}
             </ul>
           )}
         </div>
